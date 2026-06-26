@@ -1,25 +1,43 @@
+<div align="center">
+
 # Pulse Code Modulation (PCM) Pipeline: KiCad Simulation
 
-## Overview
+### Modeling analog-to-digital conversion through sampling, quantization, and 3-bit encoding
 
-This repository contains a KiCad schematic and SPICE simulation of a complete Pulse Code Modulation (PCM) pipeline — covering continuous-time **Sampling**, voltage **Quantization**, and 3-bit **Digital Encoding**. The transient simulation, run through KiCad's integrated `ngspice` engine, verifies each stage of the analog-to-digital conversion process.
+[![GitHub](https://img.shields.io/badge/GitHub-Repository-181717?style=flat&logo=github)](https://github.com/satvikpandurangi/Pulse-Code-Modulation-Simulation-kicad)
+[![KiCad](https://img.shields.io/badge/KiCad-EDA-314CB0?style=flat&logo=kicad&logoColor=white)](https://www.kicad.org/)
+[![ngspice](https://img.shields.io/badge/Simulator-ngspice-blue?style=flat)](https://ngspice.sourceforge.io/)
 
-## Features
+</div>
 
-- MOSFET-based Sample & Hold (S/H) circuit driven by a high-frequency clock
-- Behavioral SPICE voltage sources implementing quantization and encoding logic
-- 3-bit digital output (MSB, Bit 1, LSB) derived from an analog sine wave input
-- Staggered bit-trace voltages for clear waveform visualization
+---
 
-## Circuit Description
+## 📖 Overview
 
-The pipeline consists of three sequential phases:
+This repository contains a complete KiCad SPICE simulation of a Pulse Code Modulation (PCM) pipeline. It demonstrates the full analog-to-digital conversion process — continuous-time **Sampling**, voltage **Quantization**, and 3-bit **Digital Encoding** — using KiCad's integrated `ngspice` engine to verify each stage through transient analysis.
 
-- **Sampling:** An N-Channel MOSFET acts as a high-speed Sample & Hold switch, capturing the instantaneous analog input voltage and holding it across a capacitor.
-- **Quantization:** The held analog voltage is mapped to the nearest discrete voltage level, producing a uniform "staircase" approximation of the original waveform.
-- **Encoding:** The quantized levels are converted into a 3-bit binary digital format — Most Significant Bit (Bit 2), Bit 1, and Least Significant Bit (Bit 0) — using SPICE behavioral voltage sources with `sgn()` math functions.
+## 🎯 Objectives
 
-## Components
+- Design and simulate a Sample & Hold circuit using a MOSFET as a high-speed switch
+- Model voltage quantization and 3-bit digital encoding using SPICE behavioral sources
+- Verify the complete PCM pipeline against a continuous analog input signal
+
+## ✨ Features
+
+- MOSFET-based Sample & Hold (S/H) stage driven by a high-frequency clock
+- Behavioral SPICE voltage sources (`B_V`) implementing quantization and encoding logic
+- 3-bit digital output (MSB, Bit 1, LSB) derived from a sine wave input
+- Staggered bit-trace voltages for clear, distinguishable waveform visualization
+
+## ⚙️ Circuit Overview
+
+The pipeline is built in three sequential stages:
+
+- **Sampling:** An N-Channel MOSFET acts as a Sample & Hold switch, capturing the instantaneous analog voltage and holding it across a capacitor.
+- **Quantization:** The held voltage is mapped to the nearest discrete level, producing a "staircase" approximation of the original waveform.
+- **Encoding:** The quantized levels are converted into a 3-bit binary stream — MSB (Bit 2), Bit 1, and LSB (Bit 0) — using SPICE behavioral sources with `sgn()` math functions.
+
+## 🧩 Components Used
 
 | Type | Component | Value / Rating |
 |------|-----------|-----------------|
@@ -29,32 +47,19 @@ The pipeline consists of three sequential phases:
 | Source | Sine Wave Voltage Source (Analog Input) | 1 kHz, 2.5 V offset, 2.5 V amplitude |
 | Source | Pulse Voltage Source (Sampling Clock) | 10 kHz, 10 V amplitude, 10 µs pulse width |
 
-## Simulation Setup
+## 🛠️ Software & Simulation
 
-1. An N-Channel MOSFET is wired in series with a 10 nF grounding capacitor to form the Sample & Hold stage.
-2. A 1 kHz sine wave (2.5 V offset, 2.5 V amplitude) drives the MOSFET Drain as the analog input.
-3. A 10 kHz pulse wave (10 V amplitude, 10 µs width) drives the MOSFET Gate as the sampling clock.
-4. The voltage across the capacitor is tapped at the `/HOLD` net to capture the sampled signal.
-5. Three Behavioral Voltage Sources (`B_V`), using `sgn()` encoding logic, output to `/BIT2`, `/BIT1`, and `/BIT0`.
-6. Bit output peaks are staggered (4.8 V, 5.0 V, 5.2 V) to keep overlapping digital traces distinguishable on the plot.
-7. Transient analysis is run as `.tran 1u 3m` over a 3 ms window, plotting the input, sampled, and encoded waveforms.
+Built and simulated entirely in **KiCad EDA**, using its core subsystems:
 
-## Results
+- **Schematic Editor** — for laying out the MOSFET, capacitor, behavioral sources, and routing the circuit nets
+- **Integrated SPICE Simulator (ngspice)** — translates the schematic into a netlist and runs the configured Transient Analysis to plot the input, sampled, and encoded waveforms
 
-| Signal | Trace Color | Description |
-|--------|-------------|--------------|
-| Analog Input | Red | Continuous 1 kHz sine wave varying between 0 V and 5.0 V |
-| Sampled Signal (`/HOLD`) | Green | Staircase pattern — tracks the input during each 10 µs clock pulse and holds flat otherwise |
-| Bit 0 / LSB (`/BIT0`) | Yellow (peak 4.8 V) | Digital square wave from the lowest quantization thresholds |
-| Bit 1 (`/BIT1`) | Orange (peak 5.0 V) | Digital square wave from the mid-level quantization thresholds |
-| Bit 2 / MSB (`/BIT2`) | Purple (peak 5.2 V) | Stays HIGH for the upper half of the sine wave (above 2.5 V) and LOW for the lower half |
+**Requirements:** KiCad (v6.0+ recommended) with the integrated `ngspice` simulator (included by default).
 
-The simulation confirms the full PCM pipeline operating correctly: the analog sine wave is sampled and held, then quantized and encoded into a 3-bit digital representation that accurately tracks the original signal's amplitude.
-
-## Repository Structure
+## 📂 Repository Structure
 
 ```
-.
+Pulse-Code-Modulation-Simulation-kicad
 ├── PCM.kicad_pro       # Main KiCad project file
 ├── PCM.kicad_sch       # Schematic and SPICE directives
 ├── PCM.kicad_pcb       # PCB layout file
@@ -63,23 +68,35 @@ The simulation confirms the full PCM pipeline operating correctly: the analog si
 └── README.md
 ```
 
-## How to Run
+## 🚀 How to Open & Run
 
-1. Clone this repository:
+1. Clone the repository:
    ```bash
    git clone https://github.com/satvikpandurangi/Pulse-Code-Modulation-Simulation-kicad.git
    ```
 2. Open `PCM.kicad_pro` in the KiCad Project Manager.
 3. Open the Schematic Editor to view the circuit layout.
-4. Go to **Inspect > Simulator** in the menu bar.
-5. Click **Run/Stop Simulation** to execute the transient analysis.
-6. Probe the analog input, `/HOLD`, and the `/BIT2`, `/BIT1`, `/BIT0` nets to observe the sampling, quantization, and encoding stages.
+4. Go to **Inspect > Simulator** and click **Run/Stop Simulation**.
+5. Probe the analog input, `/HOLD`, and the `/BIT2`, `/BIT1`, `/BIT0` nets to observe the conversion stages.
 
-## Screenshots
+## 📊 Simulation Results
+
+| Signal | Trace Color | Description |
+|--------|-------------|--------------|
+| Analog Input | Red | Continuous 1 kHz sine wave between 0 V and 5.0 V |
+| Sampled Signal (`/HOLD`) | Green | Staircase pattern tracking the input during each clock pulse |
+| Bit 0 / LSB (`/BIT0`) | Yellow (peak 4.8 V) | Square wave from the lowest quantization thresholds |
+| Bit 1 (`/BIT1`) | Orange (peak 5.0 V) | Square wave from the mid-level quantization thresholds |
+| Bit 2 / MSB (`/BIT2`) | Purple (peak 5.2 V) | HIGH for the upper half of the sine wave, LOW for the lower half |
+
+The simulation confirms the full PCM pipeline operating correctly — the analog input is sampled, held, quantized, and encoded into a 3-bit digital representation that accurately tracks the source waveform's amplitude.
+
+## 📸 Screenshots
 
 **Schematic:**
 
 ![Schematic](PCM_Schematic.png)
+
 
 **Simulation Output:**
 
